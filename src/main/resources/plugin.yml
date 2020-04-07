@@ -1,0 +1,13 @@
+main: me.jackjack33.jackscars.Main
+version: 1.0
+name: JacksCars
+author: JackJack33
+description: A good cars plugin
+api-version: 1.13
+
+commands:
+  jchelp:
+    description: Help menu thing for JacksCars.
+  jc:
+    description: Main JacksCars command.
+

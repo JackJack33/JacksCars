@@ -1,0 +1,50 @@
+# this is the default config for JacksCars, change as much stuff as you want.
+
+is-prefix-set: true
+prefix: "§3[JacksCars]§f"
+
+default-speed: 75
+default-fuel: 100
+
+car-name: "§aCar"
+
+do-car-damage:
+
+# how much upgrades cost and how much each value will increase.
+upgrade:
+  starting-price: 30
+  speed: 25
+  fuel: 25
+
+# should upgrades get exponentially more expensive?
+upgrade-exp: false
+upgrade-exp-amt: 1.2
+
+# we suggest not changing this, any higher values are rly frikkin fast
+upgrade-cap: 5
+
+# all lines under "extra" will be at the end.
+# do not use spaces in "owner" through "fuel", will break
+car-lore:
+  owner: "§7Owner:"
+  level: "§7Level:"
+  speed: "§7Speed:"
+  fuel: "§7Fuel:"
+  extra:
+    - "§7Your very own car!"
+
+# messages
+
+msg-help:
+  - "/jc spawn - spawns a car"
+  - "/jc reload - reload the plugin"
+
+msg-usage: "§cIncorrect usage!"
+
+msg-give: "You got a car!"
+
+msg-reload: "§aReloading JacksCars..."
+msg-reload-done: "§aReloaded!"
+
+msg-speed: "Set speed to"
+msg-speed-max: "§cThe max speed is 1000"

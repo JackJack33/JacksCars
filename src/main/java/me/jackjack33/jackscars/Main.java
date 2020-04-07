@@ -23,7 +23,7 @@ public class Main extends JavaPlugin {
 
         // Vault Intergration
         if (!setupEconomy()) {
-            String[] error = {"", "§4An error occurred whilst attempting to start up JacksCars", "§4Vault was not detected during startup! Please install the latest version @ https://www.spigotmc.org/resources/vault.34315/", ""};
+            String[] error = {"", "§cAn error occurred whilst attempting to start up JacksCars", "§cVault was not detected during startup! Please install the latest version @ https://www.spigotmc.org/resources/vault.34315/", ""};
             console.sendMessage(error);
             getServer().getPluginManager().disablePlugin(this);
             return;

@@ -46,8 +46,8 @@ public class CarEvent implements Listener {
         Vector carVelocity = event.getVehicle().getVelocity();
         Vector playerLocationVelocity = p.getLocation().getDirection();
 
-        MetadataValue s = event.getVehicle().getMetadata("speed").get(0);
-        int currentSpeed = s.asInt();
+        NamespacedKey speedKey = new NamespacedKey(plugin, "JacksCars-speed");
+        Integer currentSpeed = event.getVehicle().getPersistentDataContainer().get(speedKey, PersistentDataType.INTEGER);
 
         carVelocity.setX((playerLocationVelocity.getX() / 100) * currentSpeed);
         carVelocity.setZ((playerLocationVelocity.getZ() / 100) * currentSpeed);

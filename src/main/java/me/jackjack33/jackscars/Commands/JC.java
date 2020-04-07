@@ -30,6 +30,7 @@ public class JC implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
             String usageMsg = plugin.getConfig().getString("msg-usage");
+            if (usageMsg == null) { plugin.getLogger().warning("Option msg-usage is not set!"); return true;}
             String prefix = null;
             if (plugin.getConfig().getBoolean("is-prefix-set"))
                 prefix = plugin.getConfig().getString("prefix") + " ";
@@ -95,10 +96,11 @@ public class JC implements CommandExecutor {
                     if (args.length > 1) {
                         String msg = plugin.getConfig().getString("msg-speed");
                         UUID uuid = p.getUniqueId();
-                        Integer newSpeed = Integer.parseInt(args[1]);
+                        int newSpeed = Integer.parseInt(args[1]);
                         if (newSpeed > 1000) {
                             newSpeed = 1000;
                             String msg2 = plugin.getConfig().getString("msg-speed-max");
+                            if (msg2 == null) { plugin.getLogger().warning("Option msg-speed-msg is not set!"); return true; }
                             p.sendMessage(msg2);
                         }
                         plugin.carConfig.getConfig().set("carspeed." + uuid.toString(), newSpeed);

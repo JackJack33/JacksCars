@@ -1,10 +1,7 @@
 package me.jackjack33.jackscars.Events;
 
 import me.jackjack33.jackscars.Main;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
@@ -19,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
@@ -100,14 +98,29 @@ public class CarEvent implements Listener {
 
         OfflinePlayer owner = Bukkit.getOfflinePlayer(ownerStr);
         UUID ownerUUID = owner.getUniqueId();
+        String ownerName = owner.getName();
+        if (ownerName==null) return;
 
         player.sendMessage("level" + level + "speed" + speed + "fuel" + fuel);
 
-        minecart.setMetadata("owner", new FixedMetadataValue(plugin, owner));
-        minecart.setMetadata("ownerUUID", new FixedMetadataValue(plugin, ownerUUID));
-        minecart.setMetadata("level", new FixedMetadataValue(plugin, level));
-        minecart.setMetadata("speed", new FixedMetadataValue(plugin, speed));
-        minecart.setMetadata("fuel", new FixedMetadataValue(plugin, fuel));
+        // TODO: Switch to NBT
+        NamespacedKey ownerKey = new NamespacedKey(plugin, "JacksCars-owner");
+        minecart.getPersistentDataContainer().set(ownerKey, PersistentDataType.STRING, ownerName);
+        NamespacedKey ownerUUIDKey = new NamespacedKey(plugin, "JacksCars-ownerUUID");
+        minecart.getPersistentDataContainer().set(ownerUUIDKey, PersistentDataType.STRING, ownerUUID.toString());
+        NamespacedKey levelKey = new NamespacedKey(plugin, "JacksCars-level");
+        minecart.getPersistentDataContainer().set(levelKey, PersistentDataType.INTEGER, level);
+        NamespacedKey speedKey = new NamespacedKey(plugin, "JacksCars-speed");
+        minecart.getPersistentDataContainer().set(speedKey, PersistentDataType.INTEGER, speed);
+        NamespacedKey fuelKey = new NamespacedKey(plugin, "JacksCars-fuel");
+        minecart.getPersistentDataContainer().set(fuelKey, PersistentDataType.INTEGER, fuel);
+
+        // OLD
+        //minecart.setMetadata("owner", new FixedMetadataValue(plugin, owner));
+//        minecart.setMetadata("ownerUUID", new FixedMetadataValue(plugin, ownerUUID));
+//        minecart.setMetadata("level", new FixedMetadataValue(plugin, level));
+//        minecart.setMetadata("speed", new FixedMetadataValue(plugin, speed));
+//        minecart.setMetadata("fuel", new FixedMetadataValue(plugin, fuel));
     }
 
     @EventHandler

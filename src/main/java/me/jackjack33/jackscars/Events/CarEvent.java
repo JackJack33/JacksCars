@@ -14,8 +14,6 @@ import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleUpdateEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
@@ -49,7 +47,19 @@ public class CarEvent implements Listener {
         Vector playerLocationVelocity = p.getLocation().getDirection();
 
         NamespacedKey speedKey = new NamespacedKey(plugin, "JacksCars-speed");
-        Integer currentSpeed = event.getVehicle().getPersistentDataContainer().get(speedKey, PersistentDataType.INTEGER);
+        double currentSpeed = event.getVehicle().getPersistentDataContainer().get(speedKey, PersistentDataType.INTEGER);
+
+        List<String> roadBlocks = plugin.getConfig().getStringList("custom-blocks.road-block.block");
+        double reducedPercent = plugin.getConfig().getInt("custom-blocks.road-block.slow-percent");
+        reducedPercent = reducedPercent/100;
+
+        List<Material> road = new ArrayList<>();
+        for (String block : roadBlocks) {
+            Material material = Material.getMaterial(block);
+            road.add(material);
+        }
+
+        if (!(road.contains(event.getVehicle().getLocation().add(0, -1, 0).getBlock().getType()))) currentSpeed = currentSpeed * (1 - reducedPercent);
 
         carVelocity.setX((playerLocationVelocity.getX() / 100) * currentSpeed);
         carVelocity.setZ((playerLocationVelocity.getZ() / 100) * currentSpeed);

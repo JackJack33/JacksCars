@@ -97,6 +97,16 @@ car-lore:
     - "§7Your very own car!"
 
 #
+# Signs
+# Text and such used on the plugin's signs
+#
+
+signs:
+  1-check: "[JacksCars]"
+  1-finish: "§1[JacksCars]"
+
+
+#
 # Messages
 # Messages used for events and commands
 #

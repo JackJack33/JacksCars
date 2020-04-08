@@ -3,6 +3,7 @@ package me.jackjack33.jackscars;
 import me.jackjack33.jackscars.Commands.JC;
 
 import me.jackjack33.jackscars.Events.CarEvent;
+import me.jackjack33.jackscars.Events.SignEvent;
 import me.jackjack33.jackscars.util.YAMLConfig;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -20,7 +21,7 @@ public class Main extends JavaPlugin {
 
         ConsoleCommandSender console = Bukkit.getConsoleSender();
 
-        // Vault Intergration
+        // Vault Integration
         if (!setupEconomy()) {
             String[] error = {"", "§cAn error occurred whilst attempting to start up JacksCars", "§cVault was not detected during startup! Please install the latest version @ https://www.spigotmc.org/resources/vault.34315/", ""};
             console.sendMessage(error);
@@ -34,6 +35,7 @@ public class Main extends JavaPlugin {
         new JC(this);
 
         getServer().getPluginManager().registerEvents(new CarEvent(this), this);
+        getServer().getPluginManager().registerEvents(new SignEvent(this), this);
 
         Bukkit.getConsoleSender().sendMessage("JacksCars has started successfully.");
     }

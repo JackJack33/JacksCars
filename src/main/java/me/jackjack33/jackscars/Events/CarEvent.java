@@ -21,7 +21,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,8 +30,6 @@ public class CarEvent implements Listener {
     public CarEvent(Main plugin) {
         this.plugin = plugin;
     }
-
-    public HashMap<Player, Integer> speed = new HashMap<>();
 
     @EventHandler
     public void onCarEnter(VehicleEnterEvent event) {

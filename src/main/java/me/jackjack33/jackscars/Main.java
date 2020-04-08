@@ -1,7 +1,6 @@
 package me.jackjack33.jackscars;
 
 import me.jackjack33.jackscars.Commands.JC;
-import me.jackjack33.jackscars.Commands.JCHelp;
 
 import me.jackjack33.jackscars.Events.CarEvent;
 import me.jackjack33.jackscars.util.YAMLConfig;
@@ -32,7 +31,6 @@ public class Main extends JavaPlugin {
         carConfig.createConfig();
         this.saveDefaultConfig();
 
-        new JCHelp(this);
         new JC(this);
 
         getServer().getPluginManager().registerEvents(new CarEvent(this), this);

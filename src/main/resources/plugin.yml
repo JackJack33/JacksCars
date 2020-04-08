@@ -6,8 +6,6 @@ description: A good cars plugin
 api-version: 1.13
 
 commands:
-  jchelp:
-    description: Help menu thing for JacksCars.
-  jc:
-    description: Main JacksCars command.
-
+  jackscars:
+    description: Main command used for JacksCars.
+    aliases: ["jc", "cars"]

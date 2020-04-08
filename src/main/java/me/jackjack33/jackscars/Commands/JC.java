@@ -29,14 +29,16 @@ public class JC implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
-            String usageMsg = plugin.getConfig().getString("msg-usage");
-            if (usageMsg == null) { plugin.getLogger().warning("Option msg-usage is not set!"); return true;}
-            String prefix = null;
+            Player p = (Player) sender;
+            List<String> usageMsg = plugin.getConfig().getStringList("msg-help");
+            String prefix = plugin.getConfig().getString("prefix");
             if (plugin.getConfig().getBoolean("is-prefix-set"))
                 prefix = plugin.getConfig().getString("prefix") + " ";
-            Player p = (Player) sender;
             if (args.length < 1) {
-                p.sendMessage(usageMsg);
+                p.sendMessage(prefix+"Help Menu");
+                for (String text : usageMsg) {
+                    p.sendMessage(text);
+                }
                 return false;
             }
             if (args[0].equalsIgnoreCase("reload")) {
@@ -108,12 +110,18 @@ public class JC implements CommandExecutor {
                         p.sendMessage(prefix + msg + " " + newSpeed);
                     }
                     else {
-                        p.sendMessage(usageMsg);
+                        p.sendMessage(prefix+"Help Menu");
+                        for (String text : usageMsg) {
+                            p.sendMessage(text);
+                        }
                     }
                 }
             }
             else {
-                p.sendMessage(usageMsg);
+                p.sendMessage(prefix+"Help Menu");
+                for (String text : usageMsg) {
+                    p.sendMessage(text);
+                }
             }
         }
         return false;

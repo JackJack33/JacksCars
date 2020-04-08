@@ -1,6 +1,8 @@
 package me.jackjack33.jackscars.Events;
 
 import me.jackjack33.jackscars.Main;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Minecart;
@@ -47,7 +49,10 @@ public class CarEvent implements Listener {
         Vector playerLocationVelocity = p.getLocation().getDirection();
 
         NamespacedKey speedKey = new NamespacedKey(plugin, "JacksCars-speed");
+        boolean useRoads = plugin.getConfig().getBoolean("custom-block.road-block.enabled");
         double currentSpeed = event.getVehicle().getPersistentDataContainer().get(speedKey, PersistentDataType.INTEGER);
+        double preSpeed = currentSpeed;
+        String drivingText = plugin.getConfig().getString("driving-speed");
 
         List<String> roadBlocks = plugin.getConfig().getStringList("custom-blocks.road-block.block");
         double reducedPercent = plugin.getConfig().getInt("custom-blocks.road-block.slow-percent");
@@ -61,8 +66,12 @@ public class CarEvent implements Listener {
 
         if (!(road.contains(event.getVehicle().getLocation().add(0, -1, 0).getBlock().getType()))) currentSpeed = currentSpeed * (1 - reducedPercent);
 
+        if (!useRoads) currentSpeed = preSpeed;
+
         carVelocity.setX((playerLocationVelocity.getX() / 100) * currentSpeed);
         carVelocity.setZ((playerLocationVelocity.getZ() / 100) * currentSpeed);
+
+        p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(drivingText+currentSpeed));
 
         event.getVehicle().setVelocity(carVelocity);
     }
@@ -113,9 +122,6 @@ public class CarEvent implements Listener {
         String ownerName = owner.getName();
         if (ownerName==null) return;
 
-        player.sendMessage("level" + level + "speed" + speed + "fuel" + fuel);
-
-        // TODO: Switch to NBT
         NamespacedKey ownerKey = new NamespacedKey(plugin, "JacksCars-owner");
         minecart.getPersistentDataContainer().set(ownerKey, PersistentDataType.STRING, ownerName);
         NamespacedKey ownerUUIDKey = new NamespacedKey(plugin, "JacksCars-ownerUUID");
@@ -126,13 +132,6 @@ public class CarEvent implements Listener {
         minecart.getPersistentDataContainer().set(speedKey, PersistentDataType.INTEGER, speed);
         NamespacedKey fuelKey = new NamespacedKey(plugin, "JacksCars-fuel");
         minecart.getPersistentDataContainer().set(fuelKey, PersistentDataType.INTEGER, fuel);
-
-        // OLD
-        //minecart.setMetadata("owner", new FixedMetadataValue(plugin, owner));
-//        minecart.setMetadata("ownerUUID", new FixedMetadataValue(plugin, ownerUUID));
-//        minecart.setMetadata("level", new FixedMetadataValue(plugin, level));
-//        minecart.setMetadata("speed", new FixedMetadataValue(plugin, speed));
-//        minecart.setMetadata("fuel", new FixedMetadataValue(plugin, fuel));
     }
 
     @EventHandler
@@ -171,7 +170,7 @@ public class CarEvent implements Listener {
         String ownerLine = plugin.getConfig().getString("car-lore.owner");
         String levelLine = plugin.getConfig().getString("car-lore.level");
         String speedLine = plugin.getConfig().getString("car-lore.speed");
-        String fuelLine = plugin.getConfig().getString("car-lore.speed");
+        String fuelLine = plugin.getConfig().getString("car-lore.fuel");
         List<String> extra = plugin.getConfig().getStringList("car-lore.extra");
 
         List<String> lore = new ArrayList<>();
@@ -183,8 +182,10 @@ public class CarEvent implements Listener {
 
         ItemStack cart = new ItemStack(Material.MINECART, 1);
         ItemMeta meta = cart.getItemMeta();
+        if (meta == null) return;
         meta.setDisplayName(plugin.getConfig().getString("car-name"));
         meta.setLore(lore);
+        cart.setItemMeta(meta);
         player.getInventory().addItem(cart);
         player.sendMessage(plugin.getConfig().getString("prefix") + " " + plugin.getConfig().getString("msg-pickup"));
     }

@@ -29,6 +29,7 @@ do-car-damage: true
 # Upgrades
 # These values alter how expensive starting off and upgrading is
 #
+
 upgrade:
   # starting-price:      Cost to get a new car
   starting-price: 30
@@ -46,6 +47,23 @@ upgrade-exp-amt: 1.2
 
 # upgrade-cap:           Max upgrade amount (We suggest not changing this over 5)
 upgrade-cap: 5
+
+#
+# Custom Blocks
+# Blocks used to modify how the car functions
+#
+
+custom-blocks:
+  # Road-Block:  Blocks which keep the car at normal speed, otherwise lower the speed to something lower
+  #  - block: The block(s) which allows the car to run at normal speed
+  #  - slow-percent: How much the car is slowed down when not on a road
+
+  road-block:
+    enabled: false
+    block:
+      - BLACK_CONCRETE
+      - YELLOW_CONCRETE
+    slow-percent: 75
 
 #
 # Lores
@@ -71,21 +89,23 @@ car-lore:
 # Messages used for events and commands
 #
 
-# msg-help:       Default /jchelp command
+# msg-help:       Default /jc command
 msg-help:
-  - "/jc spawn - spawns a car"
-  - "/jc reload - reload the plugin"
+  - "/jc give [player] [speed] - Give yourself a car"
+  - "/jc reload - Reload the plugin's config"
 
-# msg-usage:      Default incorrect usage message
-msg-usage: "§cIncorrect usage!"
+# driving-speed:  Action bar shown when driving, which shows speed (Set to "none" to disable). The speed is added after the string
+driving-speed: "§7Speed: §9"
 
 # msg-give:       Message when you are given a car
 # msg-pickup:     Message when you pick up your car
 msg-give: "You got a car!"
+msg-pickup: "You retrieved your car!"
+msg-cant-pickup: "This car does not belong to you!"
 
 # msg-reload:     Reloading started message
 # msg-reload-don: Reloading finished message
-msg-reload: "§aReloading JacksCars..."
+msg-reload: "§7Reloading JacksCars..."
 msg-reload-done: "§aReloaded!"
 
 # msg-speed:      Message sent when speed is changed

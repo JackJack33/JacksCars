@@ -24,6 +24,8 @@ default-fuel: 100
 car-name: "§aCar"
 # do-car-damage:         If cars should be dealing damage to entities while driving
 do-car-damage: true
+# ops-break:             Should operators be able to pick up other player's cars?
+ops-break: true
 
 #
 # Upgrades
@@ -80,7 +82,10 @@ msg-help:
 msg-usage: "§cIncorrect usage!"
 
 # msg-give:       Message when you are given a car
+# msg-pickup:     Message when you pick up your car
 msg-give: "You got a car!"
+msg-pickup: "You picked up a car!"
+msg-cant-pickup: "§cYou do not own this car!"
 
 # msg-reload:     Reloading started message
 # msg-reload-don: Reloading finished message

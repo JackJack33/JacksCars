@@ -16,9 +16,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -127,5 +129,53 @@ public class CarEvent implements Listener {
     public void onCarBreak(VehicleDestroyEvent event) {
         if (!(event.getAttacker() instanceof Player)) return;
         Minecart minecart = (Minecart)event.getVehicle();
+        Player player = (Player)event.getAttacker();
+
+        NamespacedKey ownerKey = new NamespacedKey(plugin, "JacksCars-owner");
+        NamespacedKey ownerUUIDKey = new NamespacedKey(plugin, "JacksCars-ownerUUID");
+        NamespacedKey levelKey = new NamespacedKey(plugin, "JacksCars-level");
+        NamespacedKey speedKey = new NamespacedKey(plugin, "JacksCars-speed");
+        NamespacedKey fuelKey = new NamespacedKey(plugin, "JacksCars-fuel");
+        PersistentDataContainer container = event.getVehicle().getPersistentDataContainer();
+        String saveOwner = container.get(ownerKey, PersistentDataType.STRING);
+        UUID saveOwnerUUID = UUID.fromString(container.get(ownerUUIDKey, PersistentDataType.STRING));
+        Integer saveLevel = container.get(levelKey, PersistentDataType.INTEGER);
+        Integer saveSpeed = container.get(speedKey, PersistentDataType.INTEGER);
+        Integer saveFuel = container.get(fuelKey, PersistentDataType.INTEGER);
+
+        if (!(player.getUniqueId().equals(saveOwnerUUID))) {
+            if (player.isOp()) {
+                if (!(plugin.getConfig().getBoolean("ops-break"))) {
+                    event.setCancelled(true);
+                    player.sendMessage(plugin.getConfig().getString("msg-cant-pickup"));
+                    return;
+                }
+            }
+            else {
+                event.setCancelled(true);
+                player.sendMessage(plugin.getConfig().getString("msg-cant-pickup"));
+                return;
+            }
+        }
+
+        String ownerLine = plugin.getConfig().getString("car-lore.owner");
+        String levelLine = plugin.getConfig().getString("car-lore.level");
+        String speedLine = plugin.getConfig().getString("car-lore.speed");
+        String fuelLine = plugin.getConfig().getString("car-lore.speed");
+        List<String> extra = plugin.getConfig().getStringList("car-lore.extra");
+
+        List<String> lore = new ArrayList<>();
+        lore.add(ownerLine + " " + saveOwner);
+        lore.add(levelLine + " " + saveLevel);
+        lore.add(speedLine + " " + saveSpeed);
+        lore.add(fuelLine + " " + saveFuel);
+        lore.addAll(extra);
+
+        ItemStack cart = new ItemStack(Material.MINECART, 1);
+        ItemMeta meta = cart.getItemMeta();
+        meta.setDisplayName(plugin.getConfig().getString("car-name"));
+        meta.setLore(lore);
+        player.getInventory().addItem(cart);
+        player.sendMessage(plugin.getConfig().getString("prefix") + " " + plugin.getConfig().getString("msg-pickup"));
     }
 }

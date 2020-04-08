@@ -1,7 +1,7 @@
 main: me.jackjack33.jackscars.Main
 version: 1.0
 name: JacksCars
-author: JackJack33
+authors: [JackJack33, Santio71, AppleFlavored]
 description: A good cars plugin
 api-version: 1.13
 

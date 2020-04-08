@@ -25,7 +25,7 @@ default-fuel: 100
 # car-name:              The name of the car item
 car-name: "§aCar"
 # do-car-damage:         If cars should be dealing damage to entities while driving
-do-car-damage: true
+do-car-damage: false
 
 #
 # Upgrades
@@ -59,13 +59,23 @@ custom-blocks:
   # Road-Block:  Blocks which keep the car at normal speed, otherwise lower the speed to something lower
   #  - block: The block(s) which allows the car to run at normal speed
   #  - slow-percent: How much the car is slowed down when not on a road
+  # Climb-Block: If enabled, these blocks will push the car up when they're under it.
+  #  - road blocks must be enabled for climb blocks to be
+  #  - block: same as above
+  #  - force: the amount of force that the car will be pushed up at
 
   road-block:
     enabled: false
+    slow-percent: 75
     block:
       - BLACK_CONCRETE
       - YELLOW_CONCRETE
-    slow-percent: 75
+  climb-block:
+    enabled: false
+    force: 1
+    block:
+      - BLACK_WOOL
+      - YELLOW_WOOL
 
 #
 # Lores

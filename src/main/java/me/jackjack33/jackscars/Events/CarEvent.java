@@ -187,6 +187,5 @@ public class CarEvent implements Listener {
         meta.setLore(lore);
         cart.setItemMeta(meta);
         player.getInventory().addItem(cart);
-        player.sendMessage(plugin.getConfig().getString("prefix") + " " + plugin.getConfig().getString("msg-pickup"));
     }
 }

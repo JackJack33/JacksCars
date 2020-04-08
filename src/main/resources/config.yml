@@ -91,26 +91,25 @@ car-lore:
 # Messages used for events and commands
 #
 
-# msg-help:       Default /jc command
+# msg-help:         Default /jc command
 msg-help:
   - "/jc give [player] [speed] - Give yourself a car"
   - "/jc reload - Reload the plugin's config"
 
-# driving-speed:  Action bar shown when driving, which shows speed (Set to "none" to disable). The speed is added after the string
+# driving-speed:    Action bar shown when driving, which shows speed (Set to "none" to disable). The speed is added after the string
 driving-speed: "§7Speed: §9"
 
-# msg-give:       Message when you are given a car
-# msg-pickup:     Message when you pick up your car
+# msg-give:         Message when you are given a car
+# msg-cant-pickup:  Message when you try to pick up a car that isn't yours
 msg-give: "You got a car!"
-msg-pickup: "You retrieved your car!"
 msg-cant-pickup: "This car does not belong to you!"
 
-# msg-reload:     Reloading started message
-# msg-reload-don: Reloading finished message
+# msg-reload:       Reloading started message
+# msg-reload-done:  Reloading finished message
 msg-reload: "§7Reloading JacksCars..."
 msg-reload-done: "§aReloaded!"
 
-# msg-speed:      Message sent when speed is changed
-# msg-speed-max:  Message sent when attempting to surpass 1000 speed
+# msg-speed:        Message sent when speed is changed
+# msg-speed-max:    Message sent when attempting to surpass 1000 speed
 msg-speed: "Set speed to"
 msg-speed-max: "§cThe max speed is 1000"

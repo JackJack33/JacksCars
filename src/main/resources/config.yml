@@ -6,10 +6,12 @@
 # and how to modify it
 #
 
-# is-prefix-set:  Use a prefix for the plugin
+# is-prefix-set:         Use a prefix for the plugin
 is-prefix-set: true
-# prefix:         (Requires is-prefix-set) Changes how the prefix of the plugin looks like
+# prefix:                (Requires is-prefix-set) Changes how the prefix of the plugin looks like
 prefix: "§3[JacksCars]§f"
+# ops-break:             Should operators be able to pick up other player's cars?
+ops-break: true
 
 #
 # Default Values

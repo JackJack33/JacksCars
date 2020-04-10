@@ -12,6 +12,7 @@ is-prefix-set: true
 prefix: "§3[JacksCars]§f"
 # ops-break:             Should operators be able to pick up other player's cars?
 ops-break: true
+symbol: "$"
 
 #
 # Default Values
@@ -28,13 +29,20 @@ car-name: "§aCar"
 do-car-damage: false
 
 #
-# Upgrades
-# These values alter how expensive starting off and upgrading is
+# Pricing & Upgrades
+# These values alter how expensive starting off, refueling, and upgrading is
 #
 
+# these values must be doubles (have decimal points)
+cost:
+  # new:                 cost for a new car
+  new: 10.00
+  # refuel:              cost to refuel your car
+  refuel: 2.00
+  # upgrade-start:       first upgrade cost.
+  upgrade-start: 30.00
+
 upgrade:
-  # starting-price:      Cost to get a new car
-  starting-price: 30
   # speed:               Cost to upgrade speed
   # speed-amount:        Amount speed is upgraded each time
   speed: 25
@@ -44,7 +52,7 @@ upgrade:
 
 # upgrade-exp:          Should upgrades get exponentially more expensive?
 # upgrade-exp-amt:      Percentage of how much higher the prices go
-upgrade-exp: false
+upgrade-exp: true
 upgrade-exp-amt: 1.2
 
 # upgrade-cap:           Max upgrade amount (We suggest not changing this over 5)
@@ -103,7 +111,8 @@ car-lore:
 
 signs:
   1-check: "[JacksCars]"
-  1-finish: "§1[JacksCars]"
+  1-finish: "§3[JacksCars]"
+  4-color: "§a"
 
 
 #
@@ -115,6 +124,17 @@ signs:
 msg-help:
   - "/jc give [player] [speed] - Give yourself a car"
   - "/jc reload - Reload the plugin's config"
+
+# msg-permission:   Displays when a player tries to do something they don't have perms for.
+# msg-usage:        When a player does something incorrectly.
+msg-permission: "§cInsufficient permission!"
+msg-usage: "§cIncorrect usage!"
+msg-funds: "§cInsufficient funds!"
+
+# messages related to sign creation & such
+msg-sign:
+  double-correct: "§eYou overrode the default price, if you want to use the default price, don't put anything in line 4."
+  double-error: "§eYou tried to override the default price, if you want to do so, please use a double. §7(ex: 29.99, 35.00, etc)"
 
 # driving-speed:    Action bar shown when driving, which shows speed (Set to "none" to disable). The speed is added after the string
 driving-speed: "§7Speed: §9"

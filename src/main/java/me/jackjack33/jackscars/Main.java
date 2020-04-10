@@ -14,7 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Main extends JavaPlugin {
 
     public YAMLConfig carConfig = new YAMLConfig(this.getDataFolder(), "data");
-    private static Economy economy = null;
+    public static Economy economy = null;
 
     @Override
     public void onEnable() {
@@ -56,5 +56,17 @@ public class Main extends JavaPlugin {
         }
         economy = rsp.getProvider();
         return economy != null;
+    }
+
+    public static boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            double d = Double.parseDouble(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
     }
 }

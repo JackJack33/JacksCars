@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="JacksCars">
-    <output-path>$PROJECT_DIR$/../../Development Server/plugins</output-path>
+    <output-path>$PROJECT_DIR$/out/artifacts/JacksCars</output-path>
     <root id="archive" name="JacksCars.jar">
       <element id="module-output" name="JacksCars" />
     </root>

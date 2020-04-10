@@ -129,6 +129,7 @@ msg-help:
 msg-permission: "§cInsufficient permission!"
 msg-usage: "§cIncorrect usage!"
 msg-funds: "§cInsufficient funds!"
+msg-hold: "§cYou must be holding a car!"
 
 # messages related to sign creation & such
 msg-sign:

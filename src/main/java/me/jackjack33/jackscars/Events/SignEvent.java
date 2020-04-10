@@ -13,6 +13,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,16 +38,37 @@ public class SignEvent implements Listener {
         String line1 = block.getLine(0);
         String line2 = block.getLine(1);
         String line4 = block.getLine(3);
+        ItemMeta toolMeta = player.getInventory().getItemInMainHand().getItemMeta();
+        if (toolMeta == null) {
+            player.sendMessage(prefix + plugin.getConfig().getString("msg-hold"));
+            return;
+        }
+        String toolName = toolMeta.getDisplayName();
+        List<String> lore = toolMeta.getLore();
 
         if (!line1.contains(plugin.getConfig().getString("signs.1-finish"))) return;
+        if (!(toolName == plugin.getConfig().getString("car-name"))) {
+            player.sendMessage(prefix + plugin.getConfig().getString("msg-hold"));
+            return;
+        }
+
         Double balance = plugin.economy.getBalance(Bukkit.getOfflinePlayer(player.getUniqueId()));
         String getCost = ChatColor.stripColor(line4);
         String symbol = plugin.getConfig().getString("symbol");
         getCost = getCost.substring(symbol.length());
+
+        switch (line2) {
+            case "Upgrade":
+                if (plugin.getConfig().getBoolean("upgrade-exp")) {
+                    String level = lore.get(1);
+                    String levelRep = level.substring(level.lastIndexOf(' '));
+                    player.sendMessage("checkkkk");
+                }
+        }
+
         Double cost = Double.parseDouble(getCost);
-        player.sendMessage(""+cost);
         if (balance < cost) {
-            player.sendMessage(prefix + plugin.getConfig().getString("msg-funds"));
+            player.sendMessage(prefix + plugin.getConfig().getString("msg-funds") + " §7(" +symbol + balance + " / " + symbol + cost + ")");
             return;
         }
 

@@ -41,6 +41,8 @@ public class CarEvent implements Listener {
     @EventHandler
     public void onCarUpdate(VehicleUpdateEvent event) {
         if (event.getVehicle().getPassengers().size() == 0) return;
+        if (!(event.getVehicle() instanceof Minecart)) return;
+
         Player p = (Player)event.getVehicle().getPassengers().get(0);
 
         Vector carVelocity = event.getVehicle().getVelocity();
@@ -50,7 +52,9 @@ public class CarEvent implements Listener {
         boolean useRoads = plugin.getConfig().getBoolean("custom-blocks.road-block.enabled");
         boolean useClimbBlocks = plugin.getConfig().getBoolean("custom-blocks.climb-block.enabled");
         double fallSpeed = plugin.getConfig().getDouble("falling-speed");
+        if (!(event.getVehicle().getPersistentDataContainer().has(speedKey, PersistentDataType.INTEGER))) return;
         double currentSpeed = event.getVehicle().getPersistentDataContainer().get(speedKey, PersistentDataType.INTEGER);
+        if (event.getVehicle().getLocation().getBlock().getType().equals(Material.WATER)) return;
         double preSpeed = currentSpeed;
         List<String> roadBlocks = plugin.getConfig().getStringList("custom-blocks.road-block.block");
         List<String> climbBlock = plugin.getConfig().getStringList("custom-blocks.climb-block.block");

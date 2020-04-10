@@ -74,6 +74,7 @@ public class SignEvent implements Listener {
                     Double exp = plugin.getConfig().getDouble("upgrade-exp-amt");
                     for (int i = level - 1; i > 0; i--) {
                         cost = Math.pow(cost, exp);
+                        player.sendMessage("yeeteth");
                     }
                 }
         }

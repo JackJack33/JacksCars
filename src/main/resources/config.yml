@@ -23,6 +23,8 @@ symbol: "$"
 default-speed: 75
 # default-fuel:          The default starting fuel [WIP]
 default-fuel: 100
+# default-fuel:          The speed of which your car falls when it's falling
+falling-speed: 40
 # car-name:              The name of the car item
 car-name: "§aCar"
 # do-entity-damage:      If cars should be dealing damage to entities while driving

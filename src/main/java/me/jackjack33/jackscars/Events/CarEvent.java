@@ -51,6 +51,7 @@ public class CarEvent implements Listener {
         NamespacedKey speedKey = new NamespacedKey(plugin, "JacksCars-speed");
         boolean useRoads = plugin.getConfig().getBoolean("custom-blocks.road-block.enabled");
         boolean useClimbBlocks = plugin.getConfig().getBoolean("custom-blocks.climb-block.enabled");
+        double fallSpeed = plugin.getConfig().getDouble("falling-speed");
         double currentSpeed = event.getVehicle().getPersistentDataContainer().get(speedKey, PersistentDataType.INTEGER);
         double preSpeed = currentSpeed;
         List<String> roadBlocks = plugin.getConfig().getStringList("custom-blocks.road-block.block");
@@ -75,6 +76,8 @@ public class CarEvent implements Listener {
         if (!(road.contains(event.getVehicle().getLocation().add(0, -1, 0).getBlock().getType()))) currentSpeed = currentSpeed * (1 - reducedPercent);
 
         if (!useRoads) currentSpeed = preSpeed;
+
+        if (event.getVehicle().getLocation().add(0, -1, 0).getBlock().getType().equals(Material.AIR)) currentSpeed = fallSpeed;
 
         Location playerLocation = p.getLocation().clone();
         playerLocation.setPitch(0f);
@@ -106,7 +109,7 @@ public class CarEvent implements Listener {
         carVelocity.setX((playerLocationVelocity.getX() / 100) * currentSpeed);
         carVelocity.setZ((playerLocationVelocity.getZ() / 100) * currentSpeed);
 
-        p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(drivingText+currentSpeed));
+        p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(drivingText+Math.floor(currentSpeed)));
 
         event.getVehicle().setVelocity(carVelocity);
     }

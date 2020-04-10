@@ -20,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -48,8 +49,8 @@ public class CarEvent implements Listener {
         Vector playerLocationVelocity = p.getLocation().getDirection();
 
         NamespacedKey speedKey = new NamespacedKey(plugin, "JacksCars-speed");
-        boolean useRoads = plugin.getConfig().getBoolean("custom-block.road-block.enabled");
-        boolean useClimdblocks = plugin.getConfig().getBoolean("custom-block.climb-block.enabled");
+        boolean useRoads = plugin.getConfig().getBoolean("custom-blocks.road-block.enabled");
+        boolean useClimbBlocks = plugin.getConfig().getBoolean("custom-blocks.climb-block.enabled");
         double currentSpeed = event.getVehicle().getPersistentDataContainer().get(speedKey, PersistentDataType.INTEGER);
         double preSpeed = currentSpeed;
         List<String> roadBlocks = plugin.getConfig().getStringList("custom-blocks.road-block.block");
@@ -71,7 +72,6 @@ public class CarEvent implements Listener {
             climbBlocks.add(material);
         }
 
-
         if (!(road.contains(event.getVehicle().getLocation().add(0, -1, 0).getBlock().getType()))) currentSpeed = currentSpeed * (1 - reducedPercent);
 
         if (!useRoads) currentSpeed = preSpeed;
@@ -82,7 +82,7 @@ public class CarEvent implements Listener {
         Location blockAhead = playerLocation.add(playerLocation.getDirection());
         blockAhead.setY(Math.max(playerLocation.getY() + 1, blockAhead.getY()));
 
-        if (!useClimdblocks) {
+        if (!useClimbBlocks) {
             if (blockAhead.getBlock().getType().toString().contains("SLAB")) {
                 Location above = blockAhead.add(0, 1, 0);
                 if (above.getBlock().getType() == Material.AIR) {
@@ -122,12 +122,10 @@ public class CarEvent implements Listener {
         ItemMeta meta = item.getItemMeta();
         if (meta==null) return;
 
-        String checkName = plugin.getConfig().getString("car-name");
-        if (checkName == null) return;
+        NamespacedKey isCar = new NamespacedKey(plugin, "JacksCars-car");
+        String car = meta.getPersistentDataContainer().get(isCar, PersistentDataType.STRING);
 
-        checkName = ChatColor.stripColor(checkName).toLowerCase();
-        String actualName = ChatColor.stripColor(meta.getDisplayName()).toLowerCase();
-        if (!(checkName.equalsIgnoreCase(actualName))) return;
+        if (car==null) return;
 
         if (block.toString().contains("SIGN") || block.toString().contains("RAIL")) {
             event.setCancelled(true);

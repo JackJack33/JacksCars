@@ -25,7 +25,9 @@ default-speed: 75
 default-fuel: 100
 # car-name:              The name of the car item
 car-name: "§aCar"
-# do-car-damage:         If cars should be dealing damage to entities while driving
+# do-entity-damage:      If cars should be dealing damage to entities while driving
+do-entity-damage: false
+# do-car-damage:         If cars should get damaged when driving into things like water, lava, etc.
 do-car-damage: false
 
 #

@@ -4,6 +4,7 @@ import me.jackjack33.jackscars.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Minecart;
@@ -15,6 +16,7 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,17 +40,22 @@ public class SignEvent implements Listener {
         String line1 = block.getLine(0);
         String line2 = block.getLine(1);
         String line4 = block.getLine(3);
+        if (!line1.contains(plugin.getConfig().getString("signs.1-finish"))) return;
         ItemMeta toolMeta = player.getInventory().getItemInMainHand().getItemMeta();
+
         if (toolMeta == null) {
             player.sendMessage(prefix + plugin.getConfig().getString("msg-hold"));
             return;
         }
+
         String toolName = toolMeta.getDisplayName();
         List<String> lore = toolMeta.getLore();
+        NamespacedKey isCar = new NamespacedKey(plugin, "JacksCars-car");
+        toolMeta.getPersistentDataContainer().get(isCar, PersistentDataType.STRING);
+        String isACar = toolMeta.getPersistentDataContainer().get(isCar, PersistentDataType.STRING);
 
-        if (!line1.contains(plugin.getConfig().getString("signs.1-finish"))) return;
-        if (!(toolName == plugin.getConfig().getString("car-name"))) {
-            player.sendMessage(prefix + plugin.getConfig().getString("msg-hold"));
+        if (isACar == null) {
+            player.sendMessage(prefix + plugin.getConfig().getString("msg-hold")+"t");
             return;
         }
 
@@ -56,17 +63,21 @@ public class SignEvent implements Listener {
         String getCost = ChatColor.stripColor(line4);
         String symbol = plugin.getConfig().getString("symbol");
         getCost = getCost.substring(symbol.length());
+        Double cost = Double.parseDouble(getCost);
 
         switch (line2) {
             case "Upgrade":
                 if (plugin.getConfig().getBoolean("upgrade-exp")) {
-                    String level = lore.get(1);
-                    String levelRep = level.substring(level.lastIndexOf(' '));
-                    player.sendMessage("checkkkk");
+                    String levelStr = lore.get(1);
+                    String levelRep = levelStr.substring(levelStr.lastIndexOf(' ')+1);
+                    Integer level = Integer.parseInt(levelRep);
+                    Double exp = plugin.getConfig().getDouble("upgrade-exp-amt");
+                    for (int i = level - 1; i > 0; i--) {
+                        cost = Math.pow(cost, exp);
+                    }
                 }
         }
 
-        Double cost = Double.parseDouble(getCost);
         if (balance < cost) {
             player.sendMessage(prefix + plugin.getConfig().getString("msg-funds") + " §7(" +symbol + balance + " / " + symbol + cost + ")");
             return;

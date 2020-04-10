@@ -122,12 +122,10 @@ public class CarEvent implements Listener {
         ItemMeta meta = item.getItemMeta();
         if (meta==null) return;
 
-        String checkName = plugin.getConfig().getString("car-name");
-        if (checkName == null) return;
+        NamespacedKey isCar = new NamespacedKey(plugin, "JacksCars-car");
+        String car = meta.getPersistentDataContainer().get(isCar, PersistentDataType.STRING);
 
-        checkName = ChatColor.stripColor(checkName).toLowerCase();
-        String actualName = ChatColor.stripColor(meta.getDisplayName()).toLowerCase();
-        if (!(checkName.equalsIgnoreCase(actualName))) return;
+        if (car==null) return;
 
         if (block.toString().contains("SIGN") || block.toString().contains("RAIL")) {
             event.setCancelled(true);

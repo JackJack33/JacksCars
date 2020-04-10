@@ -80,7 +80,6 @@ custom-blocks:
       - YELLOW_CONCRETE
   climb-block:
     enabled: false
-    force: 1
     block:
       - BLACK_WOOL
       - YELLOW_WOOL

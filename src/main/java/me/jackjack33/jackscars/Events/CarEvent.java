@@ -4,8 +4,6 @@ import me.jackjack33.jackscars.Main;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
-import org.bukkit.block.Block;
-import org.bukkit.block.data.type.Slab;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
@@ -13,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleUpdateEvent;
@@ -20,7 +19,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -171,6 +169,57 @@ public class CarEvent implements Listener {
     }
 
     @EventHandler
+    public void onCarDamage(VehicleDamageEvent event) {
+        if (event.getAttacker() instanceof Player) return;
+        Minecart minecart = (Minecart)event.getVehicle();
+        Player player = (Player)minecart.getPassengers().get(0);
+
+        if (player==null) return;
+
+        NamespacedKey ownerKey = new NamespacedKey(plugin, "JacksCars-owner");
+        NamespacedKey ownerUUIDKey = new NamespacedKey(plugin, "JacksCars-ownerUUID");
+        NamespacedKey levelKey = new NamespacedKey(plugin, "JacksCars-level");
+        NamespacedKey speedKey = new NamespacedKey(plugin, "JacksCars-speed");
+        NamespacedKey fuelKey = new NamespacedKey(plugin, "JacksCars-fuel");
+        PersistentDataContainer container = event.getVehicle().getPersistentDataContainer();
+        String saveOwner = container.get(ownerKey, PersistentDataType.STRING);
+        if (saveOwner == null) return;
+        event.setCancelled(true);
+        Integer saveLevel = container.get(levelKey, PersistentDataType.INTEGER);
+        Integer saveSpeed = container.get(speedKey, PersistentDataType.INTEGER);
+        Integer saveFuel = container.get(fuelKey, PersistentDataType.INTEGER);
+        boolean carBreakable = plugin.getConfig().getBoolean("do-car-damage");
+        if (!carBreakable) return;
+        String prefix = plugin.getConfig().getString("prefix");
+        String breakMessage = plugin.getConfig().getString("msg-car-broke");
+        String ownerLine = plugin.getConfig().getString("car-lore.owner");
+        String levelLine = plugin.getConfig().getString("car-lore.level");
+        String speedLine = plugin.getConfig().getString("car-lore.speed");
+        String fuelLine = plugin.getConfig().getString("car-lore.fuel");
+        List<String> extra = plugin.getConfig().getStringList("car-lore.extra");
+
+        List<String> lore = new ArrayList<>();
+        lore.add(ownerLine + " " + saveOwner);
+        lore.add(levelLine + " " + saveLevel);
+        lore.add(speedLine + " " + saveSpeed);
+        lore.add(fuelLine + " " + saveFuel);
+        lore.addAll(extra);
+
+        ItemStack cart = new ItemStack(Material.MINECART, 1);
+        ItemMeta meta = cart.getItemMeta();
+        if (meta == null) return;
+        meta.setDisplayName(plugin.getConfig().getString("car-name"));
+        meta.setLore(lore);
+        NamespacedKey isCar = new NamespacedKey(plugin, "JacksCars-car");
+        meta.getPersistentDataContainer().set(isCar, PersistentDataType.STRING, "true");
+        cart.setItemMeta(meta);
+        event.setCancelled(true);
+        event.getVehicle().remove();
+        player.getInventory().addItem(cart);
+        player.sendMessage(prefix+breakMessage);
+    }
+
+    @EventHandler
     public void onCarBreak(VehicleDestroyEvent event) {
         Minecart minecart = (Minecart)event.getVehicle();
         Player player = (Player)event.getAttacker();
@@ -183,10 +232,6 @@ public class CarEvent implements Listener {
         PersistentDataContainer container = event.getVehicle().getPersistentDataContainer();
         String saveOwner = container.get(ownerKey, PersistentDataType.STRING);
         if (saveOwner == null) return;
-        if (!(event.getAttacker() instanceof Player)) {
-            event.setCancelled(true);
-            return;
-        }
         UUID saveOwnerUUID = UUID.fromString(container.get(ownerUUIDKey, PersistentDataType.STRING));
         Integer saveLevel = container.get(levelKey, PersistentDataType.INTEGER);
         Integer saveSpeed = container.get(speedKey, PersistentDataType.INTEGER);

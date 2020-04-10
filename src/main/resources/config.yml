@@ -20,16 +20,16 @@ symbol: "$"
 #
 
 # default-speed:         The default start speed, for newly created/given cars
-default-speed: 75
 # default-fuel:          The default starting fuel [WIP]
-default-fuel: 100
 # default-fuel:          The speed of which your car falls when it's falling
-falling-speed: 40
 # car-name:              The name of the car item
-car-name: "§aCar"
 # do-entity-damage:      If cars should be dealing damage to entities while driving
-do-entity-damage: false
 # do-car-damage:         If cars should get damaged when driving into things like water, lava, etc.
+default-speed: 75
+default-fuel: 100
+falling-speed: 40
+car-name: "§aCar"
+do-entity-damage: false
 do-car-damage: false
 
 #
@@ -39,27 +39,26 @@ do-car-damage: false
 
 # these values must be doubles (have decimal points)
 cost:
-  # new:                 cost for a new car
+  # new:                 The required amount to purchase a car
+  # refuel:              The required amount to refuel your car
+  # upgrade-start:       The starting amount for the first upgrade
   new: 10.00
-  # refuel:              cost to refuel your car
   refuel: 2.00
-  # upgrade-start:       first upgrade cost.
   upgrade-start: 30.00
 
 upgrade:
-  # speed:               Cost to upgrade speed
+  # speed:               Required amount to upgrade speed
   # speed-amount:        Amount speed is upgraded each time
+  # fuel:                Required amount to upgrade fuel
   speed: 25
   speed-amount: 25
-  # fuel:                Cost to upgrade fuel
   fuel: 25
 
 # upgrade-exp:          Should upgrades get exponentially more expensive?
 # upgrade-exp-amt:      Percentage of how much higher the prices go
+# upgrade-cap:          Max upgrade amount (We suggest not changing this over 5)
 upgrade-exp: true
 upgrade-exp-amt: 1.2
-
-# upgrade-cap:           Max upgrade amount (We suggest not changing this over 5)
 upgrade-cap: 5
 
 #
@@ -101,11 +100,11 @@ car-lore:
   # level: Line 2 containing the car's level
   # speed: Line 3 containing the car's speed
   # fuel:  Line 4 containing the car's left over fuel
+  # extra: Feel free to add anything here, this is added after Line 4
   owner: "§7Owner:"
   level: "§7Level:"
   speed: "§7Speed:"
   fuel: "§7Fuel:"
-  # extra:  Feel free to add anything here, this is added after Line 4
   extra:
     - "§7Your very own car!"
 
@@ -136,6 +135,7 @@ msg-permission: "§cInsufficient permission!"
 msg-usage: "§cIncorrect usage!"
 msg-funds: "§cInsufficient funds!"
 msg-hold: "§cYou must be holding a car!"
+msg-car-broke: "§cYour car broke!"
 
 # messages related to sign creation & such
 msg-sign:

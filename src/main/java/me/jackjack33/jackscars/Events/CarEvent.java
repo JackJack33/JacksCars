@@ -224,6 +224,8 @@ public class CarEvent implements Listener {
         if (meta == null) return;
         meta.setDisplayName(plugin.getConfig().getString("car-name"));
         meta.setLore(lore);
+        NamespacedKey isCar = new NamespacedKey(plugin, "JacksCars-car");
+        meta.getPersistentDataContainer().set(isCar, PersistentDataType.STRING, "true");
         cart.setItemMeta(meta);
         event.setCancelled(true);
         event.getVehicle().remove();

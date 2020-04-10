@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.tags.ItemTagType;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,6 +87,8 @@ public class JC implements CommandExecutor {
 
                     meta.setDisplayName(msg2);
                     meta.setLore(lore);
+                    NamespacedKey isCar = new NamespacedKey(plugin, "JacksCars-car");
+                    meta.getPersistentDataContainer().set(isCar, PersistentDataType.STRING, "true");
                     cart.setItemMeta(meta);
                     p.getInventory().addItem(cart);
                     p.sendMessage(prefix + msg);

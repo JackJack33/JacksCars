@@ -64,13 +64,10 @@ upgrade-cap: 5
 #
 
 custom-blocks:
+
   # Road-Block:  Blocks which keep the car at normal speed, otherwise lower the speed to something lower
   #  - block: The block(s) which allows the car to run at normal speed
   #  - slow-percent: How much the car is slowed down when not on a road
-  # Climb-Block: If enabled, these blocks will push the car up when they're under it.
-  #  - road blocks must be enabled for climb blocks to be
-  #  - block: same as above
-  #  - force: the amount of force that the car will be pushed up at
 
   road-block:
     enabled: false
@@ -78,11 +75,16 @@ custom-blocks:
     block:
       - BLACK_CONCRETE
       - YELLOW_CONCRETE
+
+  # Climb-Block: If enabled, these blocks will push the car up when they're under it.
+  #  - enabled: If disabled, the only way a car can go up is with slabs
+  #  - block: The block(s) that the car can drive up on
+
   climb-block:
     enabled: false
     block:
-      - BLACK_WOOL
-      - YELLOW_WOOL
+      - BLACK_CONCRETE
+      - YELLOW_CONCRETE
 
 #
 # Lores

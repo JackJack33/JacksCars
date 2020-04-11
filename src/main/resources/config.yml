@@ -62,18 +62,6 @@ upgrade-exp-amt: 1.2
 upgrade-cap: 5
 
 #
-# Collisions
-# How cars should interact with entities regarding damage
-#
-
-collisions:
-  # enabled:        If collisions should deal damage to entities
-  # damage:        Amount of damage the collision should deal
-  enabled: false
-  damage: 4
-
-
-#
 # Custom Blocks
 # Blocks used to modify how the car functions
 #

@@ -4,17 +4,12 @@ import me.jackjack33.jackscars.Main;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Minecart;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.vehicle.VehicleDamageEvent;
-import org.bukkit.event.vehicle.VehicleDestroyEvent;
-import org.bukkit.event.vehicle.VehicleEnterEvent;
-import org.bukkit.event.vehicle.VehicleUpdateEvent;
+import org.bukkit.event.vehicle.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -280,5 +275,19 @@ public class CarEvent implements Listener {
         event.setCancelled(true);
         event.getVehicle().remove();
         player.getInventory().addItem(cart);
+    }
+
+    @EventHandler
+    public void onCarCollision(VehicleEntityCollisionEvent event) {
+        boolean collisionEnabled = plugin.getConfig().getBoolean("collisions.enabled");
+        double collisionDamage = plugin.getConfig().getDouble("collisions.damage");
+        if (!collisionEnabled) return;
+        if (event.getVehicle().getPassengers().size() == 0) return;
+        if (!(event.getVehicle() instanceof Minecart)) return;
+        Player p = (Player)event.getVehicle().getPassengers().get(0);
+        NamespacedKey speedKey = new NamespacedKey(plugin, "JacksCars-speed");
+        if (!(event.getVehicle().getPersistentDataContainer().has(speedKey, PersistentDataType.INTEGER))) return;
+        if (!(event.getEntity() instanceof LivingEntity)) return;
+        ((LivingEntity) event.getEntity()).damage(collisionDamage, p);
     }
 }

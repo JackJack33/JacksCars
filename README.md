@@ -38,8 +38,8 @@ This is the official Github for the JacksCars plugin. The entire plugin is open 
 
 Before:
 
-![before](http://www.bimmr.com/signs/Sign.php?Line1=%5BJacksCars%5D&Line2=Purchase&Line3=&Line4=)
+![before](https://i.imgur.com/N0TcY39.png)
 
 After:
 
-![after](http://www.bimmr.com/signs/Sign.php?Line1=%263%5BJacksCars%5D&Line2=Purchase&Line3=&Line4=%26a%2410.0)
+![after](https://i.imgur.com/imAl21p.png)

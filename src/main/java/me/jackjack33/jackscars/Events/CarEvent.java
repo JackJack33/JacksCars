@@ -31,6 +31,19 @@ public class CarEvent implements Listener {
     public void onCarEnter(VehicleEnterEvent event) {
         if (!(event.getEntered() instanceof Player)) return;
         Minecart minecart = (Minecart)event.getVehicle();
+        NamespacedKey ownerUUIDKey = new NamespacedKey(plugin, "JacksCars-ownerUUID");
+        if (!minecart.getPersistentDataContainer().has(ownerUUIDKey, PersistentDataType.STRING)) return;
+        if (event.getVehicle().getLocation().getBlock().getType().equals(Material.WATER)) {
+            event.setCancelled(true);
+            return;
+        }
+
+        UUID saveOwnerUUID = UUID.fromString(minecart.getPersistentDataContainer().get(ownerUUIDKey, PersistentDataType.STRING));
+
+        if (!(saveOwnerUUID.equals(event.getEntered().getUniqueId()))) {
+            event.setCancelled(true);
+            event.getEntered().sendMessage(plugin.getConfig().getString("msg-cant-interact"));
+        }
     }
 
     @EventHandler
@@ -38,23 +51,52 @@ public class CarEvent implements Listener {
         if (event.getVehicle().getPassengers().size() == 0) return;
         if (!(event.getVehicle() instanceof Minecart)) return;
 
-        Player p = (Player)event.getVehicle().getPassengers().get(0);
+        Minecart minecart = (Minecart)event.getVehicle();
+        PersistentDataContainer container = minecart.getPersistentDataContainer();
 
-        Vector carVelocity = event.getVehicle().getVelocity();
+        Player p = (Player)minecart.getPassengers().get(0);
+
+        Vector carVelocity = minecart.getVelocity();
         Vector playerLocationVelocity = p.getLocation().getDirection();
 
         NamespacedKey speedKey = new NamespacedKey(plugin, "JacksCars-speed");
+        if (!(minecart.getPersistentDataContainer().has(speedKey, PersistentDataType.INTEGER))) return;
+        NamespacedKey fuelKey = new NamespacedKey(plugin, "JacksCars-fuel");
+        NamespacedKey fuelTickKey = new NamespacedKey(plugin, "JacksCars-fuelTick");
         boolean useRoads = plugin.getConfig().getBoolean("custom-blocks.road-block.enabled");
         boolean useClimbBlocks = plugin.getConfig().getBoolean("custom-blocks.climb-block.enabled");
         double fallSpeed = plugin.getConfig().getDouble("falling-speed");
-        if (!(event.getVehicle().getPersistentDataContainer().has(speedKey, PersistentDataType.INTEGER))) return;
-        double currentSpeed = event.getVehicle().getPersistentDataContainer().get(speedKey, PersistentDataType.INTEGER);
-        if (event.getVehicle().getLocation().getBlock().getType().equals(Material.WATER)) return;
+        int removeFuel = plugin.getConfig().getInt("fuel-remove");
+        int fuelTick = 0;
+        int fuel = 100;
+
+        if (container.has(fuelTickKey, PersistentDataType.INTEGER)) { fuelTick = container.get(fuelTickKey, PersistentDataType.INTEGER); }
+        if (container.has(fuelKey, PersistentDataType.INTEGER)) { fuel = container.get(fuelKey, PersistentDataType.INTEGER); }
+        if (fuel==0) return;
+        fuelTick++;
+        if (fuelTick == removeFuel){
+            fuelTick=0;
+            fuel--;
+        }
+
+        container.set(fuelTickKey, PersistentDataType.INTEGER, fuelTick);
+        container.set(fuelKey, PersistentDataType.INTEGER, fuel);
+
+
+        double currentSpeed = container.get(speedKey, PersistentDataType.INTEGER);
+
+        if (minecart.getLocation().getBlock().getType().equals(Material.WATER)) {
+            minecart.removePassenger(p);
+            return;
+        }
+
         double preSpeed = currentSpeed;
         List<String> roadBlocks = plugin.getConfig().getStringList("custom-blocks.road-block.block");
         List<String> climbBlock = plugin.getConfig().getStringList("custom-blocks.climb-block.block");
         double reducedPercent = plugin.getConfig().getInt("custom-blocks.road-block.slow-percent");
         String drivingText = plugin.getConfig().getString("driving-speed");
+
+
 
         reducedPercent = reducedPercent/100;
 
@@ -70,11 +112,11 @@ public class CarEvent implements Listener {
             climbBlocks.add(material);
         }
 
-        if (!(road.contains(event.getVehicle().getLocation().add(0, -1, 0).getBlock().getType()))) currentSpeed = currentSpeed * (1 - reducedPercent);
+        if (!(road.contains(minecart.getLocation().add(0, -1, 0).getBlock().getType()))) currentSpeed = currentSpeed * (1 - reducedPercent);
 
         if (!useRoads) currentSpeed = preSpeed;
 
-        if (event.getVehicle().getLocation().add(0, -1, 0).getBlock().getType().equals(Material.AIR)) currentSpeed = fallSpeed;
+        if (minecart.getLocation().add(0, -1, 0).getBlock().getType().equals(Material.AIR)) currentSpeed = fallSpeed;
 
         Location playerLocation = p.getLocation().clone();
         playerLocation.setPitch(0f);
@@ -86,18 +128,20 @@ public class CarEvent implements Listener {
             if (blockAhead.getBlock().getType().toString().contains("SLAB")) {
                 Location above = blockAhead.add(0, 1, 0);
                 if (above.getBlock().getType() == Material.AIR) {
-                    carVelocity.setY(0.3);
+                    carVelocity.setY(0.27);
                     carVelocity.setX(playerLocationVelocity.getX() / 8.0);
                     carVelocity.setZ(playerLocationVelocity.getZ() / 8.0);
+                    currentSpeed = fallSpeed;
                 }
             }
         } else {
             if (climbBlocks.contains(blockAhead.getBlock().getType())) {
                 Location above = blockAhead.add(0, 1, 0);
                 if (above.getBlock().getType() == Material.AIR) {
-                    carVelocity.setY(0.3);
+                    carVelocity.setY(0.27);
                     carVelocity.setX(playerLocationVelocity.getX() / 8.0);
                     carVelocity.setZ(playerLocationVelocity.getZ() / 8.0);
+                    currentSpeed = fallSpeed;
                 }
             }
 
@@ -108,7 +152,7 @@ public class CarEvent implements Listener {
 
         p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(drivingText+Math.floor(currentSpeed)));
 
-        event.getVehicle().setVelocity(carVelocity);
+        minecart.setVelocity(carVelocity);
     }
 
     @EventHandler
@@ -240,13 +284,13 @@ public class CarEvent implements Listener {
             if (player.isOp()) {
                 if (!(plugin.getConfig().getBoolean("ops-break"))) {
                     event.setCancelled(true);
-                    player.sendMessage(plugin.getConfig().getString("msg-cant-pickup"));
+                    player.sendMessage(plugin.getConfig().getString("msg-cant-interact"));
                     return;
                 }
             }
             else {
                 event.setCancelled(true);
-                player.sendMessage(plugin.getConfig().getString("msg-cant-pickup"));
+                player.sendMessage(plugin.getConfig().getString("msg-cant-interact"));
                 return;
             }
         }
@@ -285,6 +329,7 @@ public class CarEvent implements Listener {
         if (event.getVehicle().getPassengers().size() == 0) return;
         if (!(event.getVehicle() instanceof Minecart)) return;
         Player p = (Player)event.getVehicle().getPassengers().get(0);
+        if (event.getEntity() == p) return;
         NamespacedKey speedKey = new NamespacedKey(plugin, "JacksCars-speed");
         if (!(event.getVehicle().getPersistentDataContainer().has(speedKey, PersistentDataType.INTEGER))) return;
         if (!(event.getEntity() instanceof LivingEntity)) return;

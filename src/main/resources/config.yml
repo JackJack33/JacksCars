@@ -20,16 +20,15 @@ symbol: "$"
 #
 
 # default-speed:         The default start speed, for newly created/given cars
-# default-fuel:          The default starting fuel [WIP]
 # default-fuel:          The speed of which your car falls when it's falling
+# fuel-remove:           How long until 1 fuel is removed (In ticks) [Default: 40]
 # car-name:              The name of the car item
-# do-entity-damage:      If cars should be dealing damage to entities while driving
 # do-car-damage:         If cars should get damaged when driving into things like water, lava, etc.
 default-speed: 75
 default-fuel: 100
+fuel-remove: 40
 falling-speed: 40
 car-name: "§aCar"
-do-entity-damage: false
 do-car-damage: false
 
 #
@@ -168,7 +167,7 @@ driving-speed: "§7Speed: §9"
 # msg-give:         Message when you are given a car
 # msg-cant-pickup:  Message when you try to pick up a car that isn't yours
 msg-give: "You got a car!"
-msg-cant-pickup: "This car does not belong to you!"
+msg-cant-interact: "§cThis car does not belong to you!"
 
 # msg-reload:       Reloading started message
 # msg-reload-done:  Reloading finished message

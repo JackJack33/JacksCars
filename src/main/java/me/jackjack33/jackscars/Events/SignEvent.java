@@ -37,6 +37,7 @@ public class SignEvent implements Listener {
         if (!event.getClickedBlock().getType().toString().contains("SIGN")) return;
         String prefix = "";
         if (plugin.getConfig().getBoolean("is-prefix-set")) prefix = plugin.getConfig().getString("prefix") + " ";
+        String perm = plugin.getConfig().getString("msg-permission");
         Player player = event.getPlayer();
         Sign block = (Sign) event.getClickedBlock().getState();
         String line1 = block.getLine(0);
@@ -50,6 +51,10 @@ public class SignEvent implements Listener {
         Double balance = plugin.economy.getBalance(Bukkit.getOfflinePlayer(player.getUniqueId()));
         if (!line1.contains(plugin.getConfig().getString("signs.1-finish"))) return;
         if (line2.contains("Purchase")) {
+            if (!player.hasPermission("jc.signs.purchase")) {
+                player.sendMessage(prefix + perm);
+                return;
+            }
             if (balance >= cost) {
                 plugin.economy.withdrawPlayer(player, cost);
                 player.sendMessage(prefix + plugin.getConfig().getString("msg-success") + " §7(-" + symbol + cost + ")");
@@ -90,6 +95,10 @@ public class SignEvent implements Listener {
 
         switch (line2) {
             case "Upgrade":
+                if (!player.hasPermission("jc.signs.upgrade")) {
+                    player.sendMessage(prefix + perm);
+                    return;
+                }
                 if (plugin.getConfig().getBoolean("upgrade-exp")) {
                     if (level >= plugin.getConfig().getInt("upgrade-cap")) {
                         player.sendMessage(prefix + plugin.getConfig().getString("msg-upgrade-cap"));
@@ -118,6 +127,10 @@ public class SignEvent implements Listener {
                 }
                 break;
             case "Refuel":
+                if (!player.hasPermission("jc.signs.refuel")) {
+                    player.sendMessage(prefix + perm);
+                    return;
+                }
                 if (fuel >= maxFuelThing) {
                     player.sendMessage(prefix + plugin.getConfig().getString("msg-refuel-full"));
                     return;

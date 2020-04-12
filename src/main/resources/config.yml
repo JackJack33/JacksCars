@@ -54,7 +54,7 @@ upgrade:
 # upgrade-exp:          Should upgrades get exponentially more expensive?
 # upgrade-exp-amt:      Percentage of how much higher the prices go
 # upgrade-cap:          Max upgrade amount (We suggest not changing this over 5)
-upgrade-exp: true
+upgrade-exp: false
 upgrade-exp-amt: 1.2
 upgrade-cap: 5
 

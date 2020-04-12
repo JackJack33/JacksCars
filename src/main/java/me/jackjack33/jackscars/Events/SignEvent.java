@@ -17,6 +17,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,7 @@ public class SignEvent implements Listener {
     public SignEvent(Main plugin) {
         this.plugin = plugin;
     }
+    List<Player> confirmUpgrade = new ArrayList<>();
 
     @EventHandler
     public void onSignClick(PlayerInteractEvent event) {
@@ -40,7 +42,23 @@ public class SignEvent implements Listener {
         String line1 = block.getLine(0);
         String line2 = block.getLine(1);
         String line4 = block.getLine(3);
+        String getCost = ChatColor.stripColor(line4);
+        String symbol = plugin.getConfig().getString("symbol");
+        getCost = getCost.substring(symbol.length());
+        Double cost = Double.parseDouble(getCost);
+        Boolean doCost = true;
+        Double balance = plugin.economy.getBalance(Bukkit.getOfflinePlayer(player.getUniqueId()));
         if (!line1.contains(plugin.getConfig().getString("signs.1-finish"))) return;
+        if (line2.contains("Purchase")) {
+            if (balance >= cost) {
+                plugin.economy.withdrawPlayer(player, cost);
+                player.sendMessage(prefix + plugin.getConfig().getString("msg-success") + " §7(-" + symbol + cost + ")");
+                plugin.getCar(player, 1, plugin.getConfig().getInt("default-speed"), plugin.getConfig().getInt("default-fuel"));
+                return;
+            }
+            player.sendMessage(prefix + plugin.getConfig().getString("msg-funds") + " §7(" + symbol + balance + " / " + symbol + cost + ")");
+            return;
+        }
         ItemMeta toolMeta = player.getInventory().getItemInMainHand().getItemMeta();
 
         if (toolMeta == null) {
@@ -55,33 +73,82 @@ public class SignEvent implements Listener {
         String isACar = toolMeta.getPersistentDataContainer().get(isCar, PersistentDataType.STRING);
 
         if (isACar == null) {
-            player.sendMessage(prefix + plugin.getConfig().getString("msg-hold")+"t");
+            player.sendMessage(prefix + plugin.getConfig().getString("msg-hold"));
             return;
         }
 
-        Double balance = plugin.economy.getBalance(Bukkit.getOfflinePlayer(player.getUniqueId()));
-        String getCost = ChatColor.stripColor(line4);
-        String symbol = plugin.getConfig().getString("symbol");
-        getCost = getCost.substring(symbol.length());
-        Double cost = Double.parseDouble(getCost);
+        String levelStr = lore.get(1);
+        String levelRep = levelStr.substring(levelStr.lastIndexOf(' ')+1);
+        String fuelStr = lore.get(3);
+        String fuelRep = fuelStr.substring(fuelStr.lastIndexOf(' ')+1);
+        Integer level = Integer.parseInt(levelRep);
+        Integer fuel = Integer.parseInt(fuelRep);
+        Integer maxFuelThing = (plugin.getConfig().getInt("upgrade.fuel") * (level - 1) + (plugin.getConfig().getInt("default-fuel")));
+        Boolean doPurchase = false;
+        Boolean doRefuel = false;
+        Boolean doUpgrade = false;
 
         switch (line2) {
             case "Upgrade":
                 if (plugin.getConfig().getBoolean("upgrade-exp")) {
-                    String levelStr = lore.get(1);
-                    String levelRep = levelStr.substring(levelStr.lastIndexOf(' ')+1);
-                    Integer level = Integer.parseInt(levelRep);
+                    if (level >= plugin.getConfig().getInt("upgrade-cap")) {
+                        player.sendMessage(prefix + plugin.getConfig().getString("msg-upgrade-cap"));
+                        return;
+                    }
                     Double exp = plugin.getConfig().getDouble("upgrade-exp-amt");
                     for (int i = level - 1; i > 0; i--) {
                         cost = Math.pow(cost, exp);
-                        player.sendMessage("yeeteth");
                     }
-                }
-        }
+                    cost = Math.floor(cost * 100) / 100;
+                    if (!confirmUpgrade.contains(player)) {
+                        player.sendMessage(prefix + plugin.getConfig().getString("msg-upgrade-query") + " " + symbol + cost);
+                        player.sendMessage(plugin.getConfig().getString("msg-upgrade-confirm"));
+                        doCost = false;
+                        confirmUpgrade.add(player);
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {confirmUpgrade.remove(player);}
+                        }.runTaskLater(plugin, 100);
+                    }
+                    else {
+                        doUpgrade = true;
+                        confirmUpgrade.remove(player);
+                    }
 
-        if (balance < cost) {
-            player.sendMessage(prefix + plugin.getConfig().getString("msg-funds") + " §7(" +symbol + balance + " / " + symbol + cost + ")");
-            return;
+                }
+                break;
+            case "Refuel":
+                if (fuel >= maxFuelThing) {
+                    player.sendMessage(prefix + plugin.getConfig().getString("msg-refuel-full"));
+                    return;
+                }
+                doRefuel = true;
+                break;
+        }
+        if (doCost) {
+            if (balance < cost) {
+                player.sendMessage(prefix + plugin.getConfig().getString("msg-funds") + " §7(" + symbol + balance + " / " + symbol + cost + ")");
+                return;
+            }
+            else {
+                plugin.economy.withdrawPlayer(player, cost);
+                player.sendMessage(prefix + plugin.getConfig().getString("msg-success") + " §7(-" + symbol + cost + ")");
+                if (doUpgrade) {
+                    level++;
+                    Integer newSpeed = Integer.parseInt(lore.get(2).substring(lore.get(2).lastIndexOf(" ")+1)) + plugin.getConfig().getInt("upgrade.speed");
+                    Integer newFuel = Integer.parseInt(lore.get(3).substring(lore.get(3).lastIndexOf(" ")+1)) + plugin.getConfig().getInt("upgrade.fuel");
+                    lore.set(1, plugin.getConfig().getString("car-lore.level") + " " + level);
+                    lore.set(2, plugin.getConfig().getString("car-lore.speed") + " " + newSpeed);
+                    lore.set(3, plugin.getConfig().getString("car-lore.fuel") + " " + newFuel);
+                    toolMeta.setLore(lore);
+                    player.getInventory().getItemInMainHand().setItemMeta(toolMeta);
+                }
+                if (doRefuel) {
+                    lore.set(3, plugin.getConfig().getString("car-lore.fuel") + " " + maxFuelThing);
+                    toolMeta.setLore(lore);
+                    player.getInventory().getItemInMainHand().setItemMeta(toolMeta);
+                }
+            }
         }
 
 

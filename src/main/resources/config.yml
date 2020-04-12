@@ -47,11 +47,9 @@ cost:
   upgrade-start: 30.00
 
 upgrade:
-  # speed:               Required amount to upgrade speed
   # speed-amount:        Amount speed is upgraded each time
-  # fuel:                Required amount to upgrade fuel
+  # fuel:                Amount fuel is upgraded each time
   speed: 25
-  speed-amount: 25
   fuel: 25
 
 # upgrade-exp:          Should upgrades get exponentially more expensive?
@@ -138,16 +136,26 @@ signs:
 
 # msg-help:         Default /jc command
 msg-help:
-  - "/jc give [player] [speed] - Give yourself a car"
+  - "/jc help - Shows this menu"
+  - "/jc give - Give yourself a car"
+  - "/jc speed - Set the speed of your car"
   - "/jc reload - Reload the plugin's config"
 
 # msg-permission:   Displays when a player tries to do something they don't have perms for.
 # msg-usage:        When a player does something incorrectly.
 msg-permission: "§cInsufficient permission!"
 msg-usage: "§cIncorrect usage!"
-msg-funds: "§cInsufficient funds!"
 msg-hold: "§cYou must be holding a car!"
 msg-car-broke: "§cYour car broke!"
+
+msg-funds: "§cInsufficient funds!"
+msg-success: "§aPurchase successful!"
+
+msg-upgrade-query: "§eUpgrade price based on your car's level:§a"
+msg-upgrade-confirm: "§e(Click again to purchase)"
+msg-upgrade-cap: "§cYour car is already at the max level!"
+
+msg-refuel-full: "§cYour fuel tank is already full!"
 
 # messages related to sign creation & such
 msg-sign:

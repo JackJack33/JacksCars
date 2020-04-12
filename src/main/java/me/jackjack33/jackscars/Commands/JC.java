@@ -51,47 +51,8 @@ public class JC implements CommandExecutor {
             }
             else if (args[0].equalsIgnoreCase("give")) {
                 if (p.hasPermission("jc.give")) {
-                    NamespacedKey key = new NamespacedKey(plugin, "jackscars");
-                    String msg = plugin.getConfig().getString("msg-give");
-                    String msg2 = plugin.getConfig().getString("car-name");
-                    int dSpeed = plugin.getConfig().getInt("default-speed");
-                    int dFuel = plugin.getConfig().getInt("default-fuel");
-
-                    ItemStack cart = new ItemStack(Material.MINECART, 1);
-                    ItemMeta meta = cart.getItemMeta();
-                    if (meta == null) return true;
-
-                    UUID ownerUUID = p.getUniqueId();
-                    String owner = p.getName();
-                    if (args.length > 1) {
-                        ownerUUID = Bukkit.getOfflinePlayer(args[1]).getUniqueId();
-                        owner = args[1];
-                    }
-                    meta.getCustomTagContainer().setCustomTag(key, ItemTagType.STRING, ownerUUID.toString());
-
-                    if (args.length > 2) {
-                        dSpeed = Integer.parseInt(args[2]);
-                    }
-
-                    List<String> lore = new ArrayList<>();
-                    String line1 = plugin.getConfig().getString("car-lore.owner") + " " + owner;
-                    String line2 = plugin.getConfig().getString("car-lore.level") + " 1";
-                    String line3 = plugin.getConfig().getString("car-lore.speed") + " " + dSpeed;
-                    String line4 = plugin.getConfig().getString("car-lore.fuel") + " " + dFuel;
-                    lore.add(line1);
-                    lore.add(line2);
-                    lore.add(line3);
-                    lore.add(line4);
-                    List<String> extra = plugin.getConfig().getStringList("car-lore.extra");
-                    lore.addAll(extra);
-
-                    meta.setDisplayName(msg2);
-                    meta.setLore(lore);
-                    NamespacedKey isCar = new NamespacedKey(plugin, "JacksCars-car");
-                    meta.getPersistentDataContainer().set(isCar, PersistentDataType.STRING, "true");
-                    cart.setItemMeta(meta);
-                    p.getInventory().addItem(cart);
-                    p.sendMessage(prefix + msg);
+                   plugin.getCar(p, 1, plugin.getConfig().getInt("default-speed"), plugin.getConfig().getInt("default-fuel"));
+                   p.sendMessage(prefix + plugin.getConfig().getString("msg-give"));
                 }
             }
             else if (args[0].equalsIgnoreCase("speed")) {
@@ -99,15 +60,36 @@ public class JC implements CommandExecutor {
                     if (args.length > 1) {
                         String msg = plugin.getConfig().getString("msg-speed");
                         UUID uuid = p.getUniqueId();
+
+                        ItemStack tool = p.getInventory().getItemInMainHand();
+                        ItemMeta toolMeta = tool.getItemMeta();
+
+                        if (toolMeta == null) {
+                            p.sendMessage(prefix + plugin.getConfig().getString("msg-hold"));
+                            return true;
+                        }
+
+                        NamespacedKey isCar = new NamespacedKey(plugin, "JacksCars-car");
+                        toolMeta.getPersistentDataContainer().get(isCar, PersistentDataType.STRING);
+                        String isACar = toolMeta.getPersistentDataContainer().get(isCar, PersistentDataType.STRING);
+
+                        if (isACar == null) {
+                            p.sendMessage(prefix + plugin.getConfig().getString("msg-hold"));
+                            return true;
+                        }
+
+                        List<String> lore = toolMeta.getLore();
+
                         int newSpeed = Integer.parseInt(args[1]);
                         if (newSpeed > 1000) {
                             newSpeed = 1000;
                             String msg2 = plugin.getConfig().getString("msg-speed-max");
-                            if (msg2 == null) { plugin.getLogger().warning("Option msg-speed-msg is not set!"); return true; }
                             p.sendMessage(msg2);
                         }
-                        plugin.carConfig.getConfig().set("carspeed." + uuid.toString(), newSpeed);
-                        plugin.carConfig.save();
+
+                        lore.set(2, plugin.getConfig().getString("car-lore.speed") + " " + newSpeed);
+                        toolMeta.setLore(lore);
+                        p.getInventory().getItemInMainHand().setItemMeta(toolMeta);
                         p.sendMessage(prefix + msg + " " + newSpeed);
                     }
                     else {

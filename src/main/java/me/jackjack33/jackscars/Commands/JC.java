@@ -33,6 +33,7 @@ public class JC implements CommandExecutor {
             String prefix = plugin.getConfig().getString("prefix");
             if (plugin.getConfig().getBoolean("is-prefix-set"))
                 prefix = plugin.getConfig().getString("prefix") + " ";
+            String perm = plugin.getConfig().getString("msg-permission");
             if (args.length < 1) {
                 p.sendMessage(prefix+"Help Menu");
                 for (String text : usageMsg) {
@@ -48,11 +49,19 @@ public class JC implements CommandExecutor {
                     msg = plugin.getConfig().getString("msg-reload-done");
                     p.sendMessage(prefix + msg);
                 }
+                else {
+                    p.sendMessage(prefix + perm);
+                    return false;
+                }
             }
             else if (args[0].equalsIgnoreCase("give")) {
                 if (p.hasPermission("jc.give")) {
                    plugin.getCar(p, 1, plugin.getConfig().getInt("default-speed"), plugin.getConfig().getInt("default-fuel"));
                    p.sendMessage(prefix + plugin.getConfig().getString("msg-give"));
+                }
+                else {
+                    p.sendMessage(prefix + perm);
+                    return false;
                 }
             }
             else if (args[0].equalsIgnoreCase("speed")) {
@@ -98,6 +107,10 @@ public class JC implements CommandExecutor {
                             p.sendMessage(text);
                         }
                     }
+                }
+                else {
+                    p.sendMessage(prefix + perm);
+                    return false;
                 }
             }
             else {

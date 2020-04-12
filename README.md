@@ -19,4 +19,27 @@ This is the official Github for the JacksCars plugin. The entire plugin is open 
 
 | Command         | Description     | Permission Node |
 |-----------------|-----------------|-----------------|
-| test | test2 | test3|
+| /jc help | Displays the help menu | N/A |
+| /jc give | Gives the player a car free of charge | jc.give |
+| /jc speed | Modifies the player's car's speed to whatever you want | jc.speed |
+| /jc reload | Reloads the plugin config | jc.reload |
+
+## Signs
+* Permission to create signs: `jc.signs`
+
+| Type          | Description   | Default Price |
+|---------------|---------------|---------------|
+| Purchase | Purchases a car | $10.00 |
+| Refuel | Refuels your car's fuel tank | $2.00 |
+| Upgrade | Upgrades your car's speed & fuel | $30.00 |
+
+* To make signs, use the sign check string (by default its `[JacksCars]`, not case sensitive)
+* Below it, add the type you want. If you want to set a custom price, in line four put a double (ex: 29.99, 35.00) without a symbol.
+
+Before:
+
+![before](http://www.bimmr.com/signs/Sign.php?Line1=%5BJacksCars%5D&Line2=Purchase&Line3=&Line4=)
+
+After:
+
+![after](http://www.bimmr.com/signs/Sign.php?Line1=%263%5BJacksCars%5D&Line2=Purchase&Line3=&Line4=%26a%2410.0)

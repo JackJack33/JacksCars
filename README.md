@@ -16,6 +16,7 @@ This is the official Github for the JacksCars plugin. The entire plugin is open 
 
 ## Commands
 * /jackscars, /jc, or /cars
+
 | Command         | Description     | Permission Node |
 |-----------------|-----------------|-----------------|
 | test | test2 | test3|

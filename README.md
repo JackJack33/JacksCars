@@ -38,8 +38,9 @@ This is the official Github for the JacksCars plugin. The entire plugin is open 
 
 Before:
 
-![before](https://i.imgur.com/N0TcY39.png)
+![signbefore](https://user-images.githubusercontent.com/30203676/79059728-17aba780-7c43-11ea-966a-9dca03cd1303.png)
 
 After:
 
-![after](https://i.imgur.com/imAl21p.png)
+![signafter](https://user-images.githubusercontent.com/30203676/79059731-18dcd480-7c43-11ea-914c-3e50b914cf9b.png)
+

@@ -36,11 +36,11 @@ This is the official Github for the JacksCars plugin. The entire plugin is open 
 * To make signs, use the sign check string (by default its `[JacksCars]`, not case sensitive)
 * Below it, add the type you want. If you want to set a custom price, in line four put a double (ex: 29.99, 35.00) without a symbol.
 
-Before:
+# Before:
 
 ![signbefore](https://user-images.githubusercontent.com/30203676/79059728-17aba780-7c43-11ea-966a-9dca03cd1303.png)
 
-After:
+# After:
 
 ![signafter](https://user-images.githubusercontent.com/30203676/79059731-18dcd480-7c43-11ea-914c-3e50b914cf9b.png)
 

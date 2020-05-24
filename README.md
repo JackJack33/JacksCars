@@ -4,7 +4,7 @@
 
 This is the official Github for the JacksCars plugin. The entire plugin is open source, and you're welcome to contribute or copy code as you wish, just be sure to credit us if you do :).
 
-**Creators:** JackJack33, Santio71, Appleflavored
+**Creators:** [JackJack33](https://github.com/JackJack33), [Santio71](https://github.com/SantioMC), [AppleFlavored](https://github.com/AppleFlavored)
 
 **Description:** JacksCars was mainly built as a simple, versatile cars plugin; it's perfect for any server that has a road network and needs some kind of transportation. The config is easy to customize and is made to be able to fit your server's needs. Want to run over monsters? Have at it!
 
